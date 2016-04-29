@@ -27,14 +27,14 @@ public class SparseBackoffTreeStructure {
 		_numLeavesHereAndLeft = new int[branches[idx]];
 		_delta = discounts[idx1];
 		int sum = 0;
-        int count = 0;
+        int count = 0; // count is the number of siblings in its left
         for(int i = 0 ; i < idx2 ; i++){
             count += branches.get(idx1).get(i);
         }
 		if(idx1 < branches.size() - 1) {
 			_children = new SparseBackoffTreeStructure[branches.get(idx1).get(idx2)];
 			for(int i=0; i<_children.length; i++) {
-				_children[i] = new SparseBackoffTreeStructure(branches, discounts, idx1+1, summ + i ,sum + _minGlobalIndex);
+				_children[i] = new SparseBackoffTreeStructure(branches, discounts, idx1+1, count + i ,sum + _minGlobalIndex);
 				_numLeaves[i] = _children[i].sumLeaves();
 				sum += _numLeaves[i];
 				_numLeavesHereAndLeft[i] = sum; 
