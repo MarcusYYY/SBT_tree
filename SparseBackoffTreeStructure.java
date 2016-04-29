@@ -13,24 +13,28 @@ public class SparseBackoffTreeStructure {
 	double _delta; //discount subtracted from every leaf and added to this node's smoother
 	
 	//assumes all entries of branches are > 0
-	public SparseBackoffTreeStructure(int [] branches, int idx) {
-		this(branches, new double[branches.length], 0, 0);
+	public SparseBackoffTreeStructure(ArrayList<ArrayList<Integer>> branches, int idx1, int idx2) {
+		this(branches, new double[branches.size()], 0, 0, 0);
 	}
 	
-	public SparseBackoffTreeStructure(int [] branches, int idx, int startingGlobalIndex) {
-		this(branches, new double[branches.length], idx, startingGlobalIndex);
+	public SparseBackoffTreeStructure(ArrayList<ArrayList<Integer>> branches, int idx1, int idx2,int startingGlobalIndex) {
+		this(branches, new double[branches.size()], idx1,idx2, startingGlobalIndex);
 	}
 	
-	public SparseBackoffTreeStructure(int [] branches, double [] discounts, int idx, int startingGlobalIndex) {
+	public SparseBackoffTreeStructure(ArrayList<ArrayList<Integer>> branches, double [] discounts, int idx1, int idx2,int startingGlobalIndex) {
 		_minGlobalIndex = startingGlobalIndex;
-		_numLeaves = new int[branches[idx]];
+		_numLeaves = new int[branches.get(idx1).get(idx2)];
 		_numLeavesHereAndLeft = new int[branches[idx]];
-		_delta = discounts[idx];
+		_delta = discounts[idx1];
 		int sum = 0;
-		if(idx < branches.length - 1) {
-			_children = new SparseBackoffTreeStructure[branches[idx]];
+        int count = 0;
+        for(int i = 0 ; i < idx2 ; i++){
+            count += branches.get(idx1).get(i);
+        }
+		if(idx1 < branches.size() - 1) {
+			_children = new SparseBackoffTreeStructure[branches.get(idx1).get(idx2)];
 			for(int i=0; i<_children.length; i++) {
-				_children[i] = new SparseBackoffTreeStructure(branches, discounts, idx+1, sum + _minGlobalIndex);
+				_children[i] = new SparseBackoffTreeStructure(branches, discounts, idx1+1, summ + i ,sum + _minGlobalIndex);
 				_numLeaves[i] = _children[i].sumLeaves();
 				sum += _numLeaves[i];
 				_numLeavesHereAndLeft[i] = sum; 
@@ -130,15 +134,29 @@ public class SparseBackoffTreeStructure {
 	}
 	
 	public static boolean testRandomLeaf() {
-		SparseBackoffTreeStructure struct = new SparseBackoffTreeStructure(new int [] {2, 2, 3});
-		Random r = new Random();
-		TIntIntHashMap cts = new TIntIntHashMap();
-		for(int i=0; i<10000; i++) {
-			int d = struct._children[1].randomLeaf(r);
-			cts.adjustOrPutValue(d,  1,  1);
-		}
-		System.out.println("should be roughly uniform from 6 to 11:");
-		System.out.println(cts.toString());
+        ArrayList<ArrayList<Integer>> list = new ArrayList<ArrayList<Integer>>();
+        ArrayList<Integer> sublist_1 = new ArrayList<Integer>();
+        ArrayList<Integer> sublist_2 = new ArrayList<Integer>();
+        ArrayList<Integer> sublist_3 = new ArrayList<Integer>();
+        sublist_1.add(2);
+        sublist_2.add(1);
+        sublist_2.add(2);
+        sublist_3.add(1);
+        sublist_3.add(2);
+        sublist_3.add(3);
+        list.add(sublist_1);
+        list.add(sublist_2);
+        list.add(sublist_3);
+		SparseBackoffTreeStructure struct = new SparseBackoffTreeStructure(list);
+        System.out.println("The branching factor is [[2],[1,2],[1,2,3]]");
+        
+        System.out.println("The first node's leaves should be 1 and the second's should be 5 at the second layer");
+        if(struct._numLeaves[0] == 1 && struct._numLeaves[1] == 5){
+            System.out.println("Test 1 passed");
+        }
+        System.out.println("The first node's leaves should be 1 , the second's should be 2 and the last's should be 3 at the third layer");
+        if(struct._children[0]._numLeaves[0] == 1 && struct._children[1]._numLeaves[0] == 2 && struct._children[1]._numLeaves[1] == 3 )
+            System.out.println("Test 2 passed");
 		return false;
 	}
 	
