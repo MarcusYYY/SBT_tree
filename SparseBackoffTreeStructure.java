@@ -21,6 +21,29 @@ public class SparseBackoffTreeStructure {
 		this(branches, new double[branches.size()], idx1,idx2, startingGlobalIndex);
 	}
 	
+	public SparseBackoffTreeStructure(int [] branches, double [] discounts, int idx, int startingGlobalIndex) {
+		_minGlobalIndex = startingGlobalIndex;
+		_numLeaves = new int[branches[idx]];
+		_numLeavesHereAndLeft = new int[branches[idx]];
+		_delta = discounts[idx];
+		int sum = 0;
+		if(idx < branches.length - 1) {
+			_children = new SparseBackoffTreeStructure[branches[idx]];
+			for(int i=0; i<_children.length; i++) {
+				_children[i] = new SparseBackoffTreeStructure(branches, discounts, idx+1, sum + _minGlobalIndex);
+				_numLeaves[i] = _children[i].sumLeaves();
+				sum += _numLeaves[i];
+				_numLeavesHereAndLeft[i] = sum; 
+			}
+		}
+		else {
+			Arrays.fill(_numLeaves, 1);
+			for(int i=0; i<_numLeavesHereAndLeft.length; i++) {
+				_numLeavesHereAndLeft[i] = i+1;
+			}
+		}
+	}
+
 	public SparseBackoffTreeStructure(ArrayList<ArrayList<Integer>> branches, double [] discounts, int idx1, int idx2,int startingGlobalIndex) {
 		_minGlobalIndex = startingGlobalIndex;
 		_numLeaves = new int[branches.get(idx1).get(idx2)];
@@ -30,7 +53,7 @@ public class SparseBackoffTreeStructure {
         int count = 0; // count is the number of siblings in its left
         for(int i = 0 ; i < idx2 ; i++){
             count += branches.get(idx1).get(i);
-        }
+        } // compute the number of siblings in its left
 		if(idx1 < branches.size() - 1) {
 			_children = new SparseBackoffTreeStructure[branches.get(idx1).get(idx2)];
 			for(int i=0; i<_children.length; i++) {
