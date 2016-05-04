@@ -1,8 +1,7 @@
-package edu.northwestern.cs.websail.sbt;
+
 import gnu.trove.map.hash.TIntIntHashMap;
 
 import java.util.*;
-
 
 public class SparseBackoffTreeStructure {
 	int [] _numLeaves; //the number of leaf nodes descendant from each child.  All 1s if children are leaves
@@ -18,26 +17,26 @@ public class SparseBackoffTreeStructure {
 	}
 	
 	public SparseBackoffTreeStructure(ArrayList<ArrayList<Integer>> branches, int idx1, int idx2,int startingGlobalIndex) {
-		this(branches, new double[branches.size()], idx1,idx2, startingGlobalIndex);
+		this(branches, new double[branches.size()], idx1, idx2, startingGlobalIndex);
 	}
 	
 	public SparseBackoffTreeStructure(ArrayList<ArrayList<Integer>> branches, double [] discounts, int idx1, int idx2,int startingGlobalIndex) {
 		_minGlobalIndex = startingGlobalIndex;
 		_numLeaves = new int[branches.get(idx1).get(idx2)];
-		_numLeavesHereAndLeft = new int[branches[idx]];
+		_numLeavesHereAndLeft = new int[branches.get(idx1).get(idx2)];
 		_delta = discounts[idx1];
 		int sum = 0;
-        int count = 0;
-        for(int i = 0 ; i < idx2 ; i++){
-            count += branches.get(idx1).get(i);
-        }
+		int summ = 0;
+		for (int i = 0; i < idx2 ; i++) {
+			summ += branches.get(idx1).get(i);
+		}
 		if(idx1 < branches.size() - 1) {
 			_children = new SparseBackoffTreeStructure[branches.get(idx1).get(idx2)];
 			for(int i=0; i<_children.length; i++) {
-				_children[i] = new SparseBackoffTreeStructure(branches, discounts, idx1+1, summ + i ,sum + _minGlobalIndex);
+				_children[i] = new SparseBackoffTreeStructure(branches, discounts, idx1+1, summ + i, sum + _minGlobalIndex);
 				_numLeaves[i] = _children[i].sumLeaves();
 				sum += _numLeaves[i];
-				_numLeavesHereAndLeft[i] = sum; 
+				_numLeavesHereAndLeft[i] = sum;
 			}
 		}
 		else {
@@ -47,14 +46,20 @@ public class SparseBackoffTreeStructure {
 			}
 		}
 	}
+//	public ArrayList<ArrayList<Integer>> extract_list(SparseBackoffTreeStructure root){
+//		ArrayList<Integer> sublist = new ArrayList<Integer>();
+//		ArrayList<SparseBackoffTreeStructure> list_of_node = new ArrayList<>();
+//		ArrayList
+//		
+//	}
 	
 	//assumes all entries of branches are > 0
-	public SparseBackoffTreeStructure(int [] branches) {
+	public SparseBackoffTreeStructure(ArrayList<ArrayList<Integer>> branches) {
 		this(branches, 0, 0);
 	}
 	
-	public SparseBackoffTreeStructure(int [] branches, double [] discounts) {
-		this(branches, discounts, 0, 0);
+	public SparseBackoffTreeStructure(ArrayList<ArrayList<Integer>> branches, double [] discounts) {
+		this(branches, discounts, 0,0,0);
 	}
 	
 	public int sumLeaves() {
@@ -67,6 +72,7 @@ public class SparseBackoffTreeStructure {
 	//returns {childIndex, leafIndexInChild}
 	public int [] getLocalIndex(int leafIndex) {
 		int [] out = new int[2];
+		System.out.println(_numLeavesHereAndLeft[0]);
 		if(_children == null) {
 			out[0] = leafIndex;
 			out[1] = 0;
@@ -134,34 +140,57 @@ public class SparseBackoffTreeStructure {
 	}
 	
 	public static boolean testRandomLeaf() {
-        ArrayList<ArrayList<Integer>> list = new ArrayList<ArrayList<Integer>>();
-        ArrayList<Integer> sublist_1 = new ArrayList<Integer>();
-        ArrayList<Integer> sublist_2 = new ArrayList<Integer>();
-        ArrayList<Integer> sublist_3 = new ArrayList<Integer>();
-        sublist_1.add(2);
-        sublist_2.add(1);
-        sublist_2.add(2);
-        sublist_3.add(1);
-        sublist_3.add(2);
-        sublist_3.add(3);
-        list.add(sublist_1);
-        list.add(sublist_2);
-        list.add(sublist_3);
+		ArrayList<ArrayList<Integer>> list = new ArrayList<ArrayList<Integer>>();
+		ArrayList<Integer> sublist_1 = new ArrayList<Integer>();
+		ArrayList<Integer> sublist_2 = new ArrayList<Integer>();
+		ArrayList<Integer> sublist_3 = new ArrayList<Integer>();
+		sublist_1.add(2);
+		sublist_2.add(1);
+		sublist_2.add(2);
+		sublist_3.add(1);
+		sublist_3.add(2);
+		sublist_3.add(3);
+		list.add(sublist_1);
+		list.add(sublist_2);
+		list.add(sublist_3);
+		
 		SparseBackoffTreeStructure struct = new SparseBackoffTreeStructure(list);
-        System.out.println("The branching factor is [[2],[1,2],[1,2,3]]");
-        
-        System.out.println("The first node's leaves should be 1 and the second's should be 5 at the second layer");
-        if(struct._numLeaves[0] == 1 && struct._numLeaves[1] == 5){
-            System.out.println("Test 1 passed");
-        }
-        System.out.println("The first node's leaves should be 1 , the second's should be 2 and the last's should be 3 at the third layer");
-        if(struct._children[0]._numLeaves[0] == 1 && struct._children[1]._numLeaves[0] == 2 && struct._children[1]._numLeaves[1] == 3 )
-            System.out.println("Test 2 passed");
+//		Random r = new Random();
+//		TIntIntHashMap cts = new TIntIntHashMap();
+//		for(int i=0; i<10000; i++) {
+//			int d = struct._children[1].randomLeaf(r);
+//			cts.adjustOrPutValue(d,  1,  1);
+//		}
+		System.out.println("The branching factor is [[2],[1,2],[1,2,3]]");
+				
+		System.out.println("The first node's leaves should be 1 and the second's should be 5 at the second layer");
+		if(struct._numLeaves[0] == 1 && struct._numLeaves[1] == 5){
+			System.out.println("Test 1 passed");
+		}
+		System.out.println("The first node's leaves should be 1 , the second's should be 2 and the last's should be 3 at the third layer");
+		if(struct._children[0]._numLeaves[0] == 1 && struct._children[1]._numLeaves[0] == 2 && struct._children[1]._numLeaves[1] == 3 )
+			System.out.println("Test 2 passed");
+		//System.out.println(struct._numLeavesHereAndLeft[1]);
+		//System.out.println("should be roughly uniform from 6 to 11:");
+		//System.out.println(cts.toString());
 		return false;
 	}
 	
 	public static boolean testGetLocalIndex() {
-		SparseBackoffTreeStructure struct = new SparseBackoffTreeStructure(new int [] {2, 2, 3});
+		ArrayList<ArrayList<Integer>> list = new ArrayList<ArrayList<Integer>>();
+		ArrayList<Integer> sublist_1 = new ArrayList<Integer>();
+		ArrayList<Integer> sublist_2 = new ArrayList<Integer>();
+		ArrayList<Integer> sublist_3 = new ArrayList<Integer>();
+		sublist_1.add(2);
+		sublist_2.add(1);
+		sublist_2.add(2);
+		sublist_3.add(1);
+		sublist_3.add(2);
+		sublist_3.add(3);
+		list.add(sublist_1);
+		list.add(sublist_2);
+		list.add(sublist_3);
+		SparseBackoffTreeStructure struct = new SparseBackoffTreeStructure(list);
 		int [] lidx = struct.getLocalIndex(3);
 		boolean passed = true;
 		if(lidx[0]==0) {
