@@ -46,11 +46,31 @@ public class SparseBackoffTreeStructure {
 			}
 		}
 	}
-	public ArrayList<ArrayList<Integer>> extract_list(SparseBackoffTreeStructure root){
-		ArrayList<Integer> sublist = new ArrayList<Integer>();
+	public static  ArrayList<ArrayList<Integer>> extract_list(SparseBackoffTreeStructure root){
+		ArrayList<ArrayList<Integer>> result = new ArrayList<>();
+		if(root == null) return result;
 		ArrayList<SparseBackoffTreeStructure> list_of_node = new ArrayList<>();
-		ArrayList
+		list_of_node.add(root);
 		
+		while(!list_of_node.isEmpty()){
+			int size = list_of_node.size();
+			ArrayList<Integer> sublist = new ArrayList<Integer>();
+			while(size > 0){
+				SparseBackoffTreeStructure node = list_of_node.remove(0);
+				if(node._children != null){
+					sublist.add(node._children.length);
+					for(int i = 0; i < node._children.length; i++){
+						list_of_node.add(node._children[i]);
+					}
+				}
+				else{
+					sublist.add(node._numLeaves.length);
+				}
+				size--;
+			}
+			result.add(sublist);
+		}
+		return result;	
 	}
 	
 	//assumes all entries of branches are > 0
@@ -211,9 +231,37 @@ public class SparseBackoffTreeStructure {
 		
 	}
 	
+	public static boolean testExtract(){
+		ArrayList<ArrayList<Integer>> list = new ArrayList<ArrayList<Integer>>();
+		ArrayList<Integer> sublist_1 = new ArrayList<Integer>();
+		ArrayList<Integer> sublist_2 = new ArrayList<Integer>();
+		ArrayList<Integer> sublist_3 = new ArrayList<Integer>();
+		sublist_1.add(2);
+		sublist_2.add(1);
+		sublist_2.add(2);
+		sublist_3.add(1);
+		sublist_3.add(2);
+		sublist_3.add(3);
+		list.add(sublist_1);
+		list.add(sublist_2);
+		list.add(sublist_3);
+		SparseBackoffTreeStructure struct = new SparseBackoffTreeStructure(list);
+		ArrayList<ArrayList<Integer>> list_of_tree = new ArrayList<>();
+		list_of_tree = extract_list(struct);
+        
+		boolean pass_ = list_of_tree.equals(list);
+
+		if (pass_)
+			System.out.print("Test passed");
+		else
+			System.out.print(String.valueOf(list_of_tree) + "should be " + String.valueOf(list));
+		return false;
+	}
+	
 	public static void main(String args[]) {
 		testRandomLeaf();
-		testGetLocalIndex();
+		//testGetLocalIndex();
+		testExtract();
 	}
 	
 }
