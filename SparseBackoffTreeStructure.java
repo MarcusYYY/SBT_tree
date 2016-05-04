@@ -73,29 +73,40 @@ public class SparseBackoffTreeStructure {
 		return result;	
 	}
 
-	public static  SparseBackoffTreeStructure grow(SparseBackoffTreeStructure root, ArrayList<Integer> method){
+	public static  SparseBackoffTreeStructure grow(SparseBackoffTreeStructure root, ArrayList<Integer> method, , ArrayList<Integer> discounts){
 		SparseBackoffTreeStructure result = root;
 		if(method.length == 0) return result;
-		ArrayList<SparseBackoffTreeStructure> list_of_node = new ArrayList<>();
-		list_of_node.add(root);
-		
-		while(!list_of_node.isEmpty()){
-			int size = list_of_node.size();
-			ArrayList<Integer> sublist = new ArrayList<Integer>();
+		ArrayList<SparseBackoffTreeStructure> queue = new ArrayList<>();
+		queue.add(root);
+		childIdx = 0
+		ArrayList<ArrayList<Integer>> branch = new ArrayList<ArrayList<Integer>>();
+		double [] discount;
+		while(!queue.isEmpty()){
+			int size = queue.size();
 			while(size > 0){
-				SparseBackoffTreeStructure node = list_of_node.remove(0);
+				SparseBackoffTreeStructure node = queue.remove(0);
 				if(node._children != null){
-					sublist.add(node._children.length);
 					for(int i = 0; i < node._children.length; i++){
-						list_of_node.add(node._children[i]);
+						queue.add(node._children[i]);
 					}
 				}
 				else{
-					sublist.add(node._numLeaves.length);
+					node._children = new SparseBackoffTreeStructure[node._numLeaves.length];
+					for(int i=0; i<_children.length; i++) {
+						temp = new ArrayList<Integer>();
+						temp.add(method(childIdx));
+						branch.add(temp);
+						discount[0] = discounts[childIdx];
+						node._children[i] = new SparseBackoffTreeStructure(branch, discount, 0, childIdx, sum + _minGlobalIndex);
+						node._numLeaves[i] = _children[i].sumLeaves();
+						sum += _numLeaves[i];
+						node._numLeavesHereAndLeft[i] = sum;
+						childIdx += 1;
+					}
+
 				}
 				size--;
 			}
-			result.add(sublist);
 		}
 		return result;	
 	}
