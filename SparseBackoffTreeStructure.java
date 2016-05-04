@@ -1,4 +1,4 @@
-package edu.northwestern.cs.websail.sbt;
+//package edu.northwestern.cs.websail.sbt;
 import gnu.trove.map.hash.TIntIntHashMap;
 
 import java.util.*;
@@ -47,7 +47,7 @@ public class SparseBackoffTreeStructure {
 	public SparseBackoffTreeStructure(ArrayList<ArrayList<Integer>> branches, double [] discounts, int idx1, int idx2,int startingGlobalIndex) {
 		_minGlobalIndex = startingGlobalIndex;
 		_numLeaves = new int[branches.get(idx1).get(idx2)];
-		_numLeavesHereAndLeft = new int[branches[idx]];
+		_numLeavesHereAndLeft = new int[branches.get(idx1).get(idx2);
 		_delta = discounts[idx1];
 		int sum = 0;
         int count = 0; // count is the number of siblings in its left
@@ -57,7 +57,7 @@ public class SparseBackoffTreeStructure {
 		if(idx1 < branches.size() - 1) {
 			_children = new SparseBackoffTreeStructure[branches.get(idx1).get(idx2)];
 			for(int i=0; i<_children.length; i++) {
-				_children[i] = new SparseBackoffTreeStructure(branches, discounts, idx1+1, count + i ,sum + _minGlobalIndex);
+				_children[i] = new SparseBackoffTreeStructure(branches, discounts, idx1 + 1, count + i ,sum + _minGlobalIndex);
 				_numLeaves[i] = _children[i].sumLeaves();
 				sum += _numLeaves[i];
 				_numLeavesHereAndLeft[i] = sum; 
