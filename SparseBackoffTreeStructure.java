@@ -72,6 +72,7 @@ public class SparseBackoffTreeStructure {
 		}
 		return result;	
 	}
+<<<<<<< HEAD
 
 	public static  SparseBackoffTreeStructure grow(SparseBackoffTreeStructure root, ArrayList<Integer> method, , ArrayList<Integer> discount){
 		ArrayList<ArrayList<Integer>> branches = new ArrayList<>();
@@ -112,6 +113,8 @@ public class SparseBackoffTreeStructure {
 		root = new SparseBackoffTreeStructure(branches, discounts, 0, 0, 0);
 		return root;
 	}
+=======
+>>>>>>> f8b307c294149d8160ce24270db49e4b1edd60b6
 	
 	//assumes all entries of branches are > 0
 	public SparseBackoffTreeStructure(ArrayList<ArrayList<Integer>> branches) {
