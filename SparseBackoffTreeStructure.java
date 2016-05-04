@@ -46,12 +46,12 @@ public class SparseBackoffTreeStructure {
 			}
 		}
 	}
-//	public ArrayList<ArrayList<Integer>> extract_list(SparseBackoffTreeStructure root){
-//		ArrayList<Integer> sublist = new ArrayList<Integer>();
-//		ArrayList<SparseBackoffTreeStructure> list_of_node = new ArrayList<>();
-//		ArrayList
-//		
-//	}
+	public ArrayList<ArrayList<Integer>> extract_list(SparseBackoffTreeStructure root){
+		ArrayList<Integer> sublist = new ArrayList<Integer>();
+		ArrayList<SparseBackoffTreeStructure> list_of_node = new ArrayList<>();
+		ArrayList
+		
+	}
 	
 	//assumes all entries of branches are > 0
 	public SparseBackoffTreeStructure(ArrayList<ArrayList<Integer>> branches) {
