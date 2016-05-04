@@ -98,7 +98,7 @@ public class SparseBackoffTreeStructure {
 			}
 			branches.add(sublist);
 		}
-		discounts = double [branches.length];
+		discounts = double [branches.length + 1];
 		branches.add(method);
 		int lay = 0;
 		curr = new SparseBackoffTreeStructure;
@@ -108,7 +108,8 @@ public class SparseBackoffTreeStructure {
 			curr = curr._children[0];
 			lay += 1
 		}
-
+		discounts[branches.length - 1] = discount;
+		root = new SparseBackoffTreeStructure(branches, discounts, 0, 0, 0);
 		return root;
 	}
 	
