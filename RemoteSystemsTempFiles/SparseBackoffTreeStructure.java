@@ -73,43 +73,42 @@ public class SparseBackoffTreeStructure {
 		return result;	
 	}
 
-	public static  SparseBackoffTreeStructure grow(SparseBackoffTreeStructure root, ArrayList<Integer> method, , ArrayList<Integer> discount){
-		ArrayList<ArrayList<Integer>> branches = new ArrayList<>();
-		if(root == null) return branches;
-		int layer = 0;
+	public static  SparseBackoffTreeStructure grow(SparseBackoffTreeStructure root, ArrayList<Integer> method, , ArrayList<Integer> discounts){
+		SparseBackoffTreeStructure result = root;
+		if(method.length == 0) return result;
 		ArrayList<SparseBackoffTreeStructure> queue = new ArrayList<>();
 		queue.add(root);
-		
+		childIdx = 0
+		ArrayList<ArrayList<Integer>> branch = new ArrayList<ArrayList<Integer>>();
+		double [] discount;
 		while(!queue.isEmpty()){
 			int size = queue.size();
-			ArrayList<Integer> sublist = new ArrayList<Integer>();
 			while(size > 0){
 				SparseBackoffTreeStructure node = queue.remove(0);
 				if(node._children != null){
-					sublist.add(node._children.length);
 					for(int i = 0; i < node._children.length; i++){
 						queue.add(node._children[i]);
 					}
 				}
 				else{
-					sublist.add(node._numLeaves.length);
+					node._children = new SparseBackoffTreeStructure[node._numLeaves.length];
+					for(int i=0; i<_children.length; i++) {
+						temp = new ArrayList<Integer>();
+						temp.add(method(childIdx));
+						branch.add(temp);
+						discount[0] = discounts[childIdx];
+						node._children[i] = new SparseBackoffTreeStructure(branch, discount, 0, childIdx, sum + _minGlobalIndex);
+						node._numLeaves[i] = _children[i].sumLeaves();
+						sum += _numLeaves[i];
+						node._numLeavesHereAndLeft[i] = sum;
+						childIdx += 1;
+					}
+
 				}
 				size--;
 			}
-			branches.add(sublist);
 		}
-		discounts = double [branches.length];
-		branches.add(method);
-		int lay = 0;
-		curr = new SparseBackoffTreeStructure;
-		curr = root;
-		while(curr){
-			discounts[lay] = curr._delta;
-			curr = curr._children[0];
-			lay += 1
-		}
-
-		return root;
+		return result;	
 	}
 	
 	//assumes all entries of branches are > 0
