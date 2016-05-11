@@ -1,6 +1,4 @@
-
 //import gnu.trove.map.hash.TIntIntHashMap;
-
 import java.util.*;
 
 public class SparseBackoffTreeStructure {
@@ -309,16 +307,16 @@ public class SparseBackoffTreeStructure {
         int leaf = 0;
         int [] trace = struct.getLocalIdxTrace(leaf);
         double [] discounts = struct.getDiscountTrace(trace);
-        //	    for (double dis : discounts)
-        //	    	System.out.println(dis);
+        	    for (double dis : discounts)
+        	    	System.out.println(dis);
         System.out.println(struct._children[1]._children[1]._numLeavesHereAndLeft[1]);
         System.out.println(extract_list(struct));
         return false;
     }
     
     public static void main(String args[]) {
-        //testRandomLeaf();
-        //testGetLocalIndex();
+        testRandomLeaf();
+        testGetLocalIndex();
         testExtract();
     }
     
