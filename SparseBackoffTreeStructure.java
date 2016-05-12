@@ -95,14 +95,14 @@ public class SparseBackoffTreeStructure {
 	// 		}
 	// 	}	
 	// }
-	public SparseBackoffTreeStructure SBT_grow(ArrayList<Integer> new_branch,SparseBackoffTreeStructure root,double new_discount){
+	public SparseBackoffTreeStructure SBT_grow(ArrayList<Integer> new_branch,double new_discount){
 		// get the new branching list
-		ArrayList<ArrayList<Integer>> branches =  extract_list(root);
+		ArrayList<ArrayList<Integer>> branches =  this.extract_list();
 		branches.add(new_branch);
 		// get the discount array by checking a random leaf's discount trace and update it to the newest version
 		int random_leaf = 0;
-		int [] leaf_trace = root.getLocalIdxTrace(random_leaf);
-		double []discounts = root.getDiscountTrace(leaf_trace);
+		int [] leaf_trace = this.getLocalIdxTrace(random_leaf);
+		double []discounts = this.getDiscountTrace(leaf_trace);
 		double [] whole_discounts = new double[discounts.length+1];
 		for(int i = 0 ; i < discounts.length ; i ++){
 			whole_discounts[i] = discounts[i];
@@ -114,11 +114,12 @@ public class SparseBackoffTreeStructure {
 
 	}
 	// Extract the branching list of a given SBT
-	public static  ArrayList<ArrayList<Integer>> extract_list(SparseBackoffTreeStructure root){
+	public  ArrayList<ArrayList<Integer>> extract_list(){
 		ArrayList<ArrayList<Integer>> result = new ArrayList<>();
-		if(root == null) return result;
+		if(this == null) return result;
+		
 		ArrayList<SparseBackoffTreeStructure> list_of_node = new ArrayList<>();
-		list_of_node.add(root);
+		list_of_node.add(this);
 		
 		while(!list_of_node.isEmpty()){
 			int size = list_of_node.size();
@@ -304,7 +305,7 @@ public class SparseBackoffTreeStructure {
 		double []discount_ = new double[] {1.1,1.2,1.3};
 		SparseBackoffTreeStructure struct = new SparseBackoffTreeStructure(list,discount_);
 		ArrayList<ArrayList<Integer>> list_of_tree = new ArrayList<>();
-		list_of_tree = extract_list(struct);
+		list_of_tree = struct.extract_list();
         
 		boolean pass_ = list_of_tree.equals(list);
         System.out.println("Test of extract_()");
@@ -312,7 +313,7 @@ public class SparseBackoffTreeStructure {
 			System.out.println("test passed");
 		else
 			System.out.print(String.valueOf(list_of_tree) + "should be " + String.valueOf(list));
-		System.out.println(extract_list(struct));
+		System.out.println(struct.extract_list());
 		
 		//test SBT_grow
 		ArrayList<Integer> sublist_4 = new ArrayList<Integer>();
@@ -321,14 +322,14 @@ public class SparseBackoffTreeStructure {
 			sublist_4.add(num[i]);
 		}
 		list.add(sublist_4);
-	    struct = struct.SBT_grow(sublist_4, struct, 0.5);
-		pass_ = extract_list(struct).equals(list);
+	    struct = struct.SBT_grow(sublist_4, 0.5);
+		pass_ = struct.extract_list().equals(list);
 		System.out.println("Test of SBT_grow");
 		if (pass_)
 			System.out.println("test passed");
 		else
-			System.out.print(String.valueOf(extract_list(struct)) + "should be " + String.valueOf(list));
-		System.out.println(extract_list(struct));
+			System.out.print(String.valueOf(struct.extract_list()) + "should be " + String.valueOf(list));
+		System.out.println(struct.extract_list());
 		return false;
 	}
 	
