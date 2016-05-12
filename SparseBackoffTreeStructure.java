@@ -97,7 +97,15 @@ public class SparseBackoffTreeStructure {
 	// }
 	public SparseBackoffTreeStructure SBT_grow(ArrayList<Integer> new_branch,double new_discount){
 		// get the new branching list
-		ArrayList<ArrayList<Integer>> branches =  this.extract_list();
+		ArrayList<ArrayList<Integer>> branches = this.extract_list();
+		int check = 0;
+		for(int branching_factor : branches.get(branches.size()-1)){
+			check += branching_factor;
+		}
+		if(check != new_branch.size()){
+			System.out.println("Can't expand because of the imcompatible new_branch list");
+			return null;
+		}
 		branches.add(new_branch);
 		// get the discount array by checking a random leaf's discount trace and update it to the newest version
 		int random_leaf = 0;
@@ -245,7 +253,7 @@ public class SparseBackoffTreeStructure {
 //			int d = struct._children[1].randomLeaf(r);
 //			cts.adjustOrPutValue(d,  1,  1);
 //		}
-		System.out.println("Test of non_uniform branching SBT constructor");
+		System.out.println("Tests of non_uniform branching SBT constructor");
 				
 		if(struct._numLeaves[0] == 1 && struct._numLeaves[1] == 5){
 			System.out.println("Test 1 passed");
@@ -273,7 +281,7 @@ public class SparseBackoffTreeStructure {
 		// for(int i = 0 ; i < lidx.length ; i++){
 		// 	System.out.println(lidx[i]);
 		// }
-		System.out.println("Test of get local index");
+		System.out.println("Tests of get local index");
 		boolean passed = true;
 		if(lidx[0] == 1) {
 			System.out.println("test 1 passed.");
@@ -313,7 +321,7 @@ public class SparseBackoffTreeStructure {
 			System.out.println("test passed");
 		else
 			System.out.print(String.valueOf(list_of_tree) + "should be " + String.valueOf(list));
-		System.out.println(struct.extract_list());
+		// System.out.println(struct.extract_list());
 		
 		//test SBT_grow
 		ArrayList<Integer> sublist_4 = new ArrayList<Integer>();
@@ -322,14 +330,21 @@ public class SparseBackoffTreeStructure {
 			sublist_4.add(num[i]);
 		}
 		list.add(sublist_4);
-	    struct = struct.SBT_grow(sublist_4, 0.5);
-		pass_ = struct.extract_list().equals(list);
-		System.out.println("Test of SBT_grow");
+		System.out.println(list);
+		struct = struct.SBT_grow(sublist_4, 0.5);
+		try{
+			pass_ = struct.extract_list().equals(list);
+		}
+
+		catch (NullPointerException nullpointer){
+			System.out.println("Failed to add new branch and test failed.");
+			return false;
+		}
+		System.out.println("Test of SBT_grow()");
 		if (pass_)
-			System.out.println("test passed");
+			System.out.println("test passed.");
 		else
-			System.out.print(String.valueOf(struct.extract_list()) + "should be " + String.valueOf(list));
-		System.out.println(struct.extract_list());
+			System.out.print("Test failed and" + String.valueOf(struct.extract_list()) + "should be " + String.valueOf(list));
 		return false;
 	}
 	
